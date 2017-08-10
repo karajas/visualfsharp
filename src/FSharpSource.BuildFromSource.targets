@@ -41,15 +41,21 @@
           Outputs="@(CopyAndSubstituteText->'$(OutDir)%(TargetFilename)')" >
 
     <PropertyGroup>
+      <CurrentPathToFile>%(CopyAndSubstituteText.FullPath)</CurrentPathToFile>
+      <CurrentPattern1>%(CopyAndSubstituteText.Pattern1)</CurrentPattern1>
+      <CurrentReplacement1>%(CopyAndSubstituteText.Replacement1)</CurrentReplacement1>
+      <CurrentPattern2>%(CopyAndSubstituteText.Pattern2)</CurrentPattern2>
+      <CurrentReplacement2>%(CopyAndSubstituteText.Replacement2)</CurrentReplacement2>
+      <CurrentTargetFilename>%(CopyAndSubstituteText.TargetFilename)</CurrentTargetFilename>
       <FileText>
-        $([System.Text.RegularExpressions.Regex]::Replace($([System.IO.File]::ReadAllText("%(CopyAndSubstituteText.FullPath)")), "%(CopyAndSubstituteText.Pattern1)", "%(CopyAndSubstituteText.Replacement1)"))
+        $([System.Text.RegularExpressions.Regex]::Replace($([System.IO.File]::ReadAllText("$(CurrentPathToFile)")), "$(CurrentPattern1)", "$(CurrentReplacement1)"))
       </FileText>
 
-      <FileText Condition = "'%(CopyAndSubstituteText.Pattern2)' != ''">
-        $([System.Text.RegularExpressions.Regex]::Replace($(FileText), "%(CopyAndSubstituteText.Pattern2)", "%(CopyAndSubstituteText.Replacement2)"))
+      <FileText Condition = "'$(CurrentPattern2)' != ''">
+        $([System.Text.RegularExpressions.Regex]::Replace($(FileText), "$(CurrentPattern2)", "$(CurrentReplacement2)"))
       </FileText>
     </PropertyGroup>
-    <WriteLinesToFile File="$(OutDir)%(CopyAndSubstituteText.TargetFilename)" Lines="$(FileText)" Overwrite="true" />
+    <WriteLinesToFile File="$(OutDir)$(CurrentTargetFilename)" Lines="$(FileText)" Overwrite="true" />
   </Target>
 
   <!--
